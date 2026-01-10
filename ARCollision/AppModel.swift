@@ -30,6 +30,10 @@ class AppModel {
     let contentEntity = Entity()
     private var meshEntities: [UUID: ModelEntity] = [:]
     
+    // MARK: - Hand Tracking State
+    var leftHandPosition: SIMD3<Float>?
+    var rightHandPosition: SIMD3<Float>?
+    
     // MARK: - Computed Properties
     
     /// Check if the required data providers are supported on this device
@@ -94,17 +98,70 @@ class AppModel {
         for await update in handTracking.anchorUpdates {
             let handAnchor = update.anchor
             
-            // Access hand skeleton and joints
             guard handAnchor.isTracked else { continue }
             
-            // You can process hand data here
-            // Example: Get index finger tip position
-            if let indexFingerTip = handAnchor.handSkeleton?.joint(.indexFingerTip) {
-                let position = indexFingerTip.anchorFromJointTransform.columns.3
-                // Do something with hand position
-                // print("Hand \(handAnchor.chirality): \(position)")
+            // Get index finger tip and thumb tip positions
+            if let indexFingerTip = handAnchor.handSkeleton?.joint(.indexFingerTip),
+               let thumbTip = handAnchor.handSkeleton?.joint(.thumbTip) {
+                
+                let indexPos = SIMD3<Float>(
+                    indexFingerTip.anchorFromJointTransform.columns.3.x,
+                    indexFingerTip.anchorFromJointTransform.columns.3.y,
+                    indexFingerTip.anchorFromJointTransform.columns.3.z
+                )
+                
+                let thumbPos = SIMD3<Float>(
+                    thumbTip.anchorFromJointTransform.columns.3.x,
+                    thumbTip.anchorFromJointTransform.columns.3.y,
+                    thumbTip.anchorFromJointTransform.columns.3.z
+                )
+                
+                // Store position based on which hand
+                switch handAnchor.chirality {
+                case .left:
+                    leftHandPosition = indexPos
+                case .right:
+                    rightHandPosition = indexPos
+                }
+                
+                // Detect pinch gesture (thumb and index finger close together)
+                let distance = simd_distance(indexPos, thumbPos)
+                detectPinch(distance: distance, position: indexPos, chirality: handAnchor.chirality)
             }
         }
+    }
+    
+    // Pinch detection state
+    private var wasLeftPinching = false
+    private var wasRightPinching = false
+    private let pinchThreshold: Float = 0.02 // 2cm
+    
+    /// Detect pinch gesture and spawn cube
+    private func detectPinch(distance: Float, position: SIMD3<Float>, chirality: HandAnchor.Chirality) {
+        let isPinching = distance < pinchThreshold
+        
+        switch chirality {
+        case .left:
+            if isPinching && !wasLeftPinching {
+                // Pinch started
+                print("🤏 Left hand pinch detected at distance: \(distance)m")
+                addCube(tapLocation: position)
+            }
+            wasLeftPinching = isPinching
+            
+        case .right:
+            if isPinching && !wasRightPinching {
+                // Pinch started
+                print("🤏 Right hand pinch detected at distance: \(distance)m")
+                addCube(tapLocation: position)
+            }
+            wasRightPinching = isPinching
+        }
+    }
+    
+    /// Get the current hand position (prefers right hand, falls back to left)
+    func getCurrentHandPosition() -> SIMD3<Float>? {
+        return rightHandPosition ?? leftHandPosition
     }
     
     // MARK: - Session Monitoring
@@ -194,5 +251,7 @@ class AppModel {
         cube.components.set(InputTargetComponent())
         
         contentEntity.addChild(cube)
+        
+        print("🎲 Spawned cube at: \(tapLocation)")
     }
 }

@@ -56,7 +56,7 @@ struct ImmersiveView: View {
             await appModel.processReconstructionUpdates()
         }
         .gesture(
-            // Add spatial tap gesture to place cubes in 3D space
+            // Tap on entities to place cube at exact tap location
             SpatialTapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
