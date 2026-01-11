@@ -251,7 +251,5 @@ class AppModel {
         cube.components.set(InputTargetComponent())
         
         contentEntity.addChild(cube)
-        
-        print("🎲 Spawned cube at: \(tapLocation)")
     }
 }

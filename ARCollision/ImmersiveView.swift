@@ -68,3 +68,4 @@ struct ImmersiveView: View {
 }
 
 // Preview removed - requires full AppModel implementation with ARKit session
+
