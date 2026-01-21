@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "back.png",
       "idiom" : "vision",
       "scale" : "2x"
     }
@@ -8,5 +9,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "localizable" : true
   }
 }

@@ -23,7 +23,7 @@ class AppModel {
     
     // MARK: - ARKit Session & Providers
     let session = ARKitSession()
-    let sceneReconstruction = SceneReconstructionProvider()
+    let sceneReconstruction = SceneReconstructionProvider(modes: [.classification])
     let handTracking = HandTrackingProvider()
     
     // MARK: - Content Entity Management
@@ -168,20 +168,27 @@ class AppModel {
     
     /// Monitor ARKit session events for errors and interruptions
     func monitorSessionEvents() async {
+        print("👁️ Session monitoring started")
         for await event in session.events {
             switch event {
             case .authorizationChanged(let type, let status):
-                print("Authorization changed for \(type): \(status)")
+                print("🔐 Authorization changed for \(type): \(status)")
                 if status == .denied {
-                    // Handle denied authorization
+                    print("❌ Authorization denied - scene reconstruction may not work")
                 }
             case .dataProviderStateChanged(let providers, let newState, let error):
-                print("Data provider state changed: \(newState)")
+                print("🔄 Data provider state changed: \(newState)")
+                print("   Providers affected: \(providers)")
                 if let error {
-                    print("Error: \(error)")
+                    print("❌ Error: \(error)")
+                }
+                
+                // Check specifically for scene reconstruction provider
+                if providers.contains(where: { $0 is SceneReconstructionProvider }) {
+                    print("📡 SceneReconstructionProvider state: \(sceneReconstruction.state)")
                 }
             @unknown default:
-                print("Unknown session event")
+                print("❓ Unknown session event")
             }
         }
     }
@@ -190,12 +197,25 @@ class AppModel {
     
     /// Process scene reconstruction mesh updates
     func processReconstructionUpdates() async {
+        print("🔍 Scene reconstruction update loop started")
+        var anchorCount = 0
+        
         for await update in sceneReconstruction.anchorUpdates {
+            anchorCount += 1
             let meshAnchor = update.anchor
             
-            guard let shape = try? await ShapeResource.generateStaticMesh(from: meshAnchor) else { continue }
+            // Log the position of this mesh anchor
+            let position = meshAnchor.originFromAnchorTransform.columns.3
+            print("📍 Mesh anchor update #\(anchorCount) - Event: \(update.event) - Position: (\(position.x), \(position.y), \(position.z))")
+            
             switch update.event {
             case .added:
+                // Generate collision shape for the new mesh
+                guard let shape = try? await ShapeResource.generateStaticMesh(from: meshAnchor) else {
+                    print("⚠️ Failed to generate collision shape for new mesh anchor: \(meshAnchor.id)")
+                    continue
+                }
+                
                 let entity = ModelEntity()
                 entity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
                 entity.collision = CollisionComponent(shapes: [shape], isStatic: true)
@@ -203,30 +223,50 @@ class AppModel {
                 entity.physicsBody = PhysicsBodyComponent(mode: .static)
                 
                 // Add semi-transparent material so you can see the scanned meshes
+                // Using pure light pink color (纯粉色，不偏黄)
                 if let mesh = try? await MeshResource(from: meshAnchor) {
                     var material = SimpleMaterial()
-                    material.color = .init(tint: .white.withAlphaComponent(0.3))
+                    // RGB for pure pink: R=1.0, G=0.6, B=0.85
+                    material.color = .init(tint: UIColor(red: 1.0, green: 0.6, blue: 0.85, alpha: 0.6))
                     entity.model = ModelComponent(mesh: mesh, materials: [material])
                 }
                 
                 meshEntities[meshAnchor.id] = entity
                 contentEntity.addChild(entity)
+                print("✅ Added mesh anchor: \(meshAnchor.id) - Total meshes: \(meshEntities.count)")
+                
             case .updated:
-                guard let entity = meshEntities[meshAnchor.id] else { continue }
+                guard let entity = meshEntities[meshAnchor.id] else {
+                    print("⚠️ Received update for unknown mesh anchor: \(meshAnchor.id)")
+                    continue
+                }
+                
+                // Generate NEW collision shape for the UPDATED mesh
+                guard let shape = try? await ShapeResource.generateStaticMesh(from: meshAnchor) else {
+                    print("⚠️ Failed to generate collision shape for updated mesh anchor: \(meshAnchor.id)")
+                    continue
+                }
+                
                 entity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
                 entity.collision = CollisionComponent(shapes: [shape], isStatic: true)
                 
-                // Update the visual mesh too
+                // Update the visual mesh too with pure light pink color (纯粉色，不偏黄)
                 if let mesh = try? await MeshResource(from: meshAnchor) {
                     var material = SimpleMaterial()
-                    material.color = .init(tint: .white.withAlphaComponent(0.3))
+                    // RGB for pure pink: R=1.0, G=0.6, B=0.85
+                    material.color = .init(tint: UIColor(red: 1.0, green: 0.6, blue: 0.85, alpha: 0.6))
                     entity.model = ModelComponent(mesh: mesh, materials: [material])
                 }
+                print("🔄 Updated mesh anchor: \(meshAnchor.id) - Total meshes: \(meshEntities.count)")
+                
             case .removed:
                 meshEntities[meshAnchor.id]?.removeFromParent()
                 meshEntities.removeValue(forKey: meshAnchor.id)
+                print("🗑️ Removed mesh anchor: \(meshAnchor.id) - Total meshes: \(meshEntities.count)")
             }
         }
+        
+        print("⚠️ Scene reconstruction update loop ended unexpectedly")
     }
     
     // MARK: - Interaction

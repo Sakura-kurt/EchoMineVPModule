@@ -34,9 +34,31 @@ struct ImmersiveView: View {
                     return
                 }
                 
+                // Request authorization for world sensing (required for scene reconstruction)
+                print("🔐 Requesting world sensing authorization...")
+                let authorizationResult = await appModel.session.requestAuthorization(for: [.worldSensing, .handTracking])
+                
+                for (authorizationType, authorizationStatus) in authorizationResult {
+                    print("   \(authorizationType): \(authorizationStatus)")
+                    if authorizationStatus == .denied {
+                        print("❌ \(authorizationType) authorization denied - app functionality will be limited")
+                    }
+                }
+                
                 print("✅ Starting session with providers...")
+                print("   SceneReconstructionProvider state before run: \(appModel.sceneReconstruction.state)")
+                print("   HandTrackingProvider state before run: \(appModel.handTracking.state)")
+                
                 try await appModel.session.run([appModel.sceneReconstruction, appModel.handTracking])
+                
                 print("✅ Session started successfully!")
+                print("   SceneReconstructionProvider state after run: \(appModel.sceneReconstruction.state)")
+                print("   HandTrackingProvider state after run: \(appModel.handTracking.state)")
+                
+                // Give the system a moment to start providing data
+                try await Task.sleep(for: .seconds(0.5))
+                print("🔍 Scene reconstruction should now be active and scanning")
+                
             } catch {
                 print("❌ Failed to start session: \(error)")
                 await dismissImmersiveSpace()
