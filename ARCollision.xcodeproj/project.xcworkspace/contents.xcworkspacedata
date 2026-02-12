@@ -4,4 +4,10 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <FileRef
+      location = "group:VoiceInteractionVisionView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:VOICE_TESTING_V3_GUIDE.md">
+   </FileRef>
 </Workspace>

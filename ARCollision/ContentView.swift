@@ -10,10 +10,29 @@ import RealityKit
 
 struct ContentView: View {
     @Environment(AppModel.self) private var appModel
+    @State private var showVoiceInteraction = false
 
     var body: some View {
         VStack(spacing: 20) {
             ToggleImmersiveSpaceButton()
+            
+            // Voice Interaction (VAD + RAG + History)
+            Button(action: {
+                showVoiceInteraction = true
+            }) {
+                HStack {
+                    Image(systemName: "brain.head.profile")
+                        .font(.title2)
+                    Text("Voice Interaction")
+                        .font(.headline)
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(.cyan.gradient)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+            }
+            .padding(.horizontal)
             
             if appModel.immersiveSpaceState == .open {
                 VStack(spacing: 15) {
@@ -62,6 +81,9 @@ struct ContentView: View {
             }
         }
         .padding()
+        .sheet(isPresented: $showVoiceInteraction) {
+            VoiceInteractionView()
+        }
     }
 }
 

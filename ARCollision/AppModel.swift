@@ -223,11 +223,11 @@ class AppModel {
                 entity.physicsBody = PhysicsBodyComponent(mode: .static)
                 
                 // Add semi-transparent material so you can see the scanned meshes
-                // Using pure light pink color (纯粉色，不偏黄)
+                // Using pure light pink color (纯粉色，不偏黄) - visionOS compatible
                 if let mesh = try? await MeshResource(from: meshAnchor) {
                     var material = SimpleMaterial()
-                    // RGB for pure pink: R=1.0, G=0.6, B=0.85
-                    material.color = .init(tint: UIColor(red: 1.0, green: 0.6, blue: 0.85, alpha: 0.6))
+                    // SwiftUI Color for visionOS (R=1.0, G=0.6, B=0.85, alpha=0.6)
+                    material.color = .init(tint: .init(red: 1.0, green: 0.6, blue: 0.85, alpha: 0.6))
                     entity.model = ModelComponent(mesh: mesh, materials: [material])
                 }
                 
@@ -250,11 +250,11 @@ class AppModel {
                 entity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
                 entity.collision = CollisionComponent(shapes: [shape], isStatic: true)
                 
-                // Update the visual mesh too with pure light pink color (纯粉色，不偏黄)
+                // Update the visual mesh too with pure light pink color (纯粉色，不偏黄) - visionOS compatible
                 if let mesh = try? await MeshResource(from: meshAnchor) {
                     var material = SimpleMaterial()
-                    // RGB for pure pink: R=1.0, G=0.6, B=0.85
-                    material.color = .init(tint: UIColor(red: 1.0, green: 0.6, blue: 0.85, alpha: 0.6))
+                    // SwiftUI Color for visionOS (R=1.0, G=0.6, B=0.85, alpha=0.6)
+                    material.color = .init(tint: .init(red: 1.0, green: 0.6, blue: 0.85, alpha: 0.6))
                     entity.model = ModelComponent(mesh: mesh, materials: [material])
                 }
                 print("🔄 Updated mesh anchor: \(meshAnchor.id) - Total meshes: \(meshEntities.count)")

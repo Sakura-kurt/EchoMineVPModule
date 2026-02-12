@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0EBE4AA82F118E12004F6553 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 0EBE4AA72F118E12004F6553 /* RealityKitContent */; };
+		0EEEDE282F3D5FE100B7D770 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EEEDE272F3D5FE100B7D770 /* ServerConfig.swift */; };
+		0EEEDE2A2F3D602E00B7D770 /* VISIONPRO_SERVER_CONNECTION_GUIDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 0EEEDE292F3D602E00B7D770 /* VISIONPRO_SERVER_CONNECTION_GUIDE.md */; };
+		0EEEDE2C2F3D615700B7D770 /* HOTSPOT_CONNECTION_GUIDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 0EEEDE2B2F3D615700B7D770 /* HOTSPOT_CONNECTION_GUIDE.md */; };
+		0EEEDE2E2F3D683700B7D770 /* EDITABLE_VOICE_CONFIG_GUIDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 0EEEDE2D2F3D683700B7D770 /* EDITABLE_VOICE_CONFIG_GUIDE.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,6 +28,10 @@
 		0EBE4AA22F118E12004F6553 /* ARCollision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARCollision.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EBE4AA62F118E12004F6553 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		0EBE4ABE2F118E12004F6553 /* ARCollisionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ARCollisionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0EEEDE272F3D5FE100B7D770 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+		0EEEDE292F3D602E00B7D770 /* VISIONPRO_SERVER_CONNECTION_GUIDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = VISIONPRO_SERVER_CONNECTION_GUIDE.md; sourceTree = "<group>"; };
+		0EEEDE2B2F3D615700B7D770 /* HOTSPOT_CONNECTION_GUIDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = HOTSPOT_CONNECTION_GUIDE.md; sourceTree = "<group>"; };
+		0EEEDE2D2F3D683700B7D770 /* EDITABLE_VOICE_CONFIG_GUIDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = EDITABLE_VOICE_CONFIG_GUIDE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -78,6 +86,10 @@
 				0EBE4AA52F118E12004F6553 /* Packages */,
 				0EBE4AC12F118E12004F6553 /* ARCollisionTests */,
 				0EBE4AA32F118E12004F6553 /* Products */,
+				0EEEDE272F3D5FE100B7D770 /* ServerConfig.swift */,
+				0EEEDE292F3D602E00B7D770 /* VISIONPRO_SERVER_CONNECTION_GUIDE.md */,
+				0EEEDE2B2F3D615700B7D770 /* HOTSPOT_CONNECTION_GUIDE.md */,
+				0EEEDE2D2F3D683700B7D770 /* EDITABLE_VOICE_CONFIG_GUIDE.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -191,6 +203,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EEEDE2A2F3D602E00B7D770 /* VISIONPRO_SERVER_CONNECTION_GUIDE.md in Resources */,
+				0EEEDE2E2F3D683700B7D770 /* EDITABLE_VOICE_CONFIG_GUIDE.md in Resources */,
+				0EEEDE2C2F3D615700B7D770 /* HOTSPOT_CONNECTION_GUIDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EEEDE282F3D5FE100B7D770 /* ServerConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +260,7 @@
 				INFOPLIST_KEY_NSAccessoryTrackingUsageDescription = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSHandsTrackingUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				INFOPLIST_KEY_NSWorldSensingUsageDescription = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -278,6 +295,7 @@
 				INFOPLIST_KEY_NSAccessoryTrackingUsageDescription = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSHandsTrackingUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				INFOPLIST_KEY_NSWorldSensingUsageDescription = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
